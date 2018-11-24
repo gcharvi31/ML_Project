@@ -9,6 +9,7 @@ from time import time
 from tqdm import tqdm
 
 from scipy.stats import boxcox
+from sklearn.decomposition import PCA
 from sklearn.model_selection import cross_val_score
 from sklearn.metrics import make_scorer, \
 	roc_auc_score
@@ -93,6 +94,22 @@ def normalize(df, scaler='robust'):
 	df = pd.DataFrame(X_scaled, columns=df.columns)
 	
 	return df
+
+def reduce_dimension(df, n_components=100, method='pca'):
+    """ Reduce the dimension of data. """
+    
+    print('Reducing dimension to ' + n_components + ' columns.')
+
+    if method is not 'pca':
+        err = 'Method ' + method + ' not supported yet.'
+        raise NotImplementedError(err)
+    
+    decomposer = PCA(n_components=n_components)
+    X = decomposer.fit_transform(df)
+    headers = ['col_' + str(i + 1) for i in range(n_components)]
+    df = pd.DataFrame(X, columns=headers)
+    
+    return df
 
 
 # Data Manipulation
